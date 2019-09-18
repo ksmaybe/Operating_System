@@ -1,5 +1,9 @@
 import java.io.*;
+import java.util.*;
 public class Main {
+    //check if Numerical
+    public static boolean isNumeric(String str){ return str.chars().allMatch(Character::isDigit);}
+
 
     public static void main(String[] args) throws Exception {
         String currentDirectory=System.getProperty("user.dir");
