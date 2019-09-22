@@ -21,12 +21,25 @@ public class Main {
                 "Error: Absolute address exceeds size of machine. Largest legal value used." //7
         };
         File file;
-        if (!keyboard){
-            file=new File("lol");
+        if (keyboard){
+            Scanner kb=new Scanner(System.in);
+            File kb_input= new File("kb_input");
+            kb_input.createNewFile();
+            FileWriter writer=new FileWriter(kb_input);
+            String quit="";
+            while(true){
+                quit=kb.nextLine();
+                System.out.println(quit);
+                if(quit.length()==0) break;
+                writer.write(quit);
+                writer.write("\n");
+
+            } writer.close();
+            file=kb_input;
         }
         else{
             //File file=new File(args[0]);
-            file=new File("input-3");}
+            file=new File("input-8");}
         Scanner input = new Scanner(file);
         int mod_address=0;
         String s="";   //string scanned
@@ -57,7 +70,9 @@ public class Main {
                 if(defList.containsKey(s)){
                     System.out.println(String.format(error[1],s));
                 } else{
-                    defList.put(s,num+mod_address);
+                    if(num>=NT){defList.put(s,mod_address);
+                    System.out.println("The definition of "+s+" is outside of module "+k+" . Zero (relative) used.");}
+                    else defList.put(s,num+mod_address);
                 }
                 location.put(s,i);
 
@@ -129,39 +144,96 @@ public class Main {
             NT = input.nextInt();
             for (int k = 0; k < NT; k++) {
                 s=input.next();
-                num=input.nextInt();
+                String next_input=input.next();
+                while(true){
+                if(isNumeric(next_input)){
+                    num=Integer.parseInt(next_input);
+                    break;
+                }
+                else {
+                    s=next_input;
+                    next_input=input.next();
+                    System.out.println("Multiple symbols in same use instruction, last usage used only.");
+                }
+                }
                 use.put(num,s);
             }
             //program text
             HashMap<Integer,Integer> operations = new HashMap<Integer,Integer>();
+            HashMap<Integer,Integer> locate = new HashMap<Integer,Integer>();
             NT=input.nextInt();
             for(int k =0;k<NT;k++){
                 Integer val=input.nextInt();
-                operations.put(i,val);
+                operations.put(k,val);
+                locate.put(val,k);
             }
+//            for(Integer key:use.keySet()){
+//                System.out.println(key+"    "+use.get(key));
+//            }
+//            for(Integer key:operations.keySet()){
+//                System.out.println(key+"    "+operations.get(key));
+//            }
+            //parse through use list operations
+            int[] values=new int[NT];
             for(Integer key: use.keySet()){
+                int sVal=0;
+                //symbol used but not defined
+                if(!defList.containsKey(use.get(key))){
+                    sVal=0;
+                }
+                else sVal=defList.get(use.get(key)); //symbol def
                 int val=operations.get(key);
-                int type=val%10;
-                if(type==1){
-                    operations.put(key,val-type+4);
-                    System.out.println("Error: "+val+" is immediate type appears on use list, treated as external type.");
+                while(val!=-1) {
+                    int type = val % 10;
+                    int address = (val / 10) % 1000;
+                    int v = val / 10000;
+                    if (type == 1) {
+                        values[key] = v * 1000 + sVal;
+                        operations.remove(key);
+                        System.out.println("Error: " + val + " is immediate type appears on use list, treated as external type.");
+                    } else if (type == 2) {
+                        values[key] = val / 10;
+                        operations.remove(key);
+                        break;
+                    } else if (type == 3) {
+                        values[key] = val / 10 + mod_address;
+                        operations.remove(key);
+                        break;
+                    } else {
+                        values[key] = v * 1000 + sVal;
+                        operations.remove(key);
+                    }
+                    key = address;
+                    if (key == 777) val = -1;
+                    else val = operations.get(key);
+                    if (key >= NT && key!=777) {
+                        System.out.println("Error: " + address + " is out of range. Program terminated.");
+                        return;
+                    }
                 }
             }
+            for(Integer key:operations.keySet()){
+                int val=operations.get(key);
+                int type = val % 10;
+                if (type==4){
+                    values[key]=val/10;
+                    System.out.println("Error: "+val+" is external type not in use list, treated as immediate type.");
+                }else if(type==1){
+                    values[key]=val/10;}
+                else if(type==2){
+                    if((val%10000)/10>=200){
+                        values[key]=(val/10000)*1000+199;
+                        System.out.println(val+" is absolute address more than 200 word limit. Using largest legal value");
+                    }
+                    else values[key]=val/10;
 
-//                Integer type=val%10;
-//                val=val/10;
-//                Integer op=val/1000;
-//                Integer v=0;
-//                if(type==1 || type==2){
-//                    v=val;
-//                }else if(type==3){
-//                    v=val+mod_address;
-//                }else if(type==4){
-//
-//                    v=(op*1000);//+defList.get(useList.get(mod_address+k));
-//                }}
-//                System.out.println((mod_address+k)+":   "+v);
-
+                }else if(type==3){
+                    values[key]=val/10+mod_address;
+                }
+            }
+            for(int z=0;z<values.length;z++){
+                System.out.println(mod_address+z+": "+values[z]);
+            }
 
             mod_address+=NT;
         }// end of second pass
