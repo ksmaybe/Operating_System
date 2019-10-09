@@ -21,13 +21,21 @@ public class lab2 {
 
     public static void main(String[] args) throws Exception {
 
-        String randomFile = "random-numbers.txt";
-        File file= new File(randomFile);
-        Scanner input = new Scanner(file);
+        String randomFileName = "random-numbers.txt";
+        File randomFile= new File(randomFileName);
+        Scanner random = new Scanner(randomFile);
+        String inputFileName= "input1";
+        File inputFile=new File(inputFileName);
+        Scanner input = new Scanner(inputFile);
 
-        System.out.println(randomOS(input,5));
-        System.out.println(randomOS(input,5));
-        System.out.println(randomOS(input,5));
+
+        int N = input.nextInt();
+        for(int i=0;i<N;i++){
+            System.out.println(input.nextInt());
+            System.out.println(input.nextInt());
+            System.out.println(input.nextInt());
+            System.out.println(input.nextInt());
+        }
 
 
     }
