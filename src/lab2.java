@@ -6,6 +6,19 @@ public class lab2 {
         String X=input.nextLine();
         return 1+(Integer.parseInt(X)%U);
     }
+    private static float fcfs(int A,int B, int C, int M){
+        return 0;
+    }
+    private static float rr(int A,int B, int C, int M){
+        return 0;
+    }
+    private static float sjf(int A,int B, int C, int M){
+        return 0;
+    }
+    private static float hprn(int A,int B, int C, int M){
+        return 0;
+    }
+
     public static void main(String[] args) throws Exception {
 
         String randomFile = "random-numbers.txt";

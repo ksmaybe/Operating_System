@@ -1,9 +1,0 @@
-To compile:
-javac Main.java
-
-To run:
-if keyboard:
-java Main
-
-if input file:
-java Main "file name"
