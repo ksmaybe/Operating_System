@@ -28,13 +28,14 @@ public class lab2 {
         File inputFile=new File(inputFileName);
         Scanner input = new Scanner(inputFile);
 
-
+        String input_line="";
         int N = input.nextInt();
+        input_line+=N;
         for(int i=0;i<N;i++){
-            System.out.println(input.nextInt());
-            System.out.println(input.nextInt());
-            System.out.println(input.nextInt());
-            System.out.println(input.nextInt());
+            int A=input.nextInt();
+            int B=input.nextInt();
+            int C=input.nextInt();
+            int M=input.nextInt();
         }
 
 
