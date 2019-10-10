@@ -6,15 +6,6 @@ public class lab2 {
         String X = input.nextLine();
         return 1 + (Integer.parseInt(X) % U);
     }
-
-    private static float fcfs(List<List> original, List<List> input) throws Exception {
-        printIntro(original, input);
-
-
-        int a = 1241;
-        return 0;
-    }
-
     private static void printIntro(List<List> original, List<List> input) {
         System.out.print("The original input was: ");
         System.out.print(original.size());
@@ -44,6 +35,16 @@ public class lab2 {
             System.out.print(")");
         }
     }
+
+    private static float fcfs(List<List> original, List<List> input) throws Exception {
+        printIntro(original, input);
+
+
+        int a = 1241;
+        return 0;
+    }
+
+
 
     private static float rr(List original, List input) throws Exception {
 
