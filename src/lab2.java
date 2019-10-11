@@ -2,8 +2,21 @@ import java.io.*;
 import java.util.*;
 
 public class lab2 {
-    private static float randomOS(Scanner input, int U) {
-        String X = input.nextLine();
+    static String randomFileName = "random-numbers.txt";
+    static File randomFile = new File(randomFileName);
+    static Scanner random;
+    static boolean detail=false;
+
+    static {
+        try {
+            random = new Scanner(randomFile);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static float randomOS(int U) {
+        String X = random.nextLine();
         return 1 + (Integer.parseInt(X) % U);
     }
     private static void printIntro(List<List> original, List<List> input) {
@@ -36,44 +49,49 @@ public class lab2 {
         }
     }
 
-    private static float fcfs(List<List> original, List<List> input) throws Exception {
+    private static void fcfs(List<List> original, List<List> input) throws Exception {
         printIntro(original, input);
+        System.out.println();
+        System.out.println("The scheduling algorithm used was First Come First Served");
+        System.out.println();
+        int count=original.size();
+        int p=0;
+        while (true){
+            if(detail){System.out.print("Before cycle   "+p);}
+            if(count==0)break;
+        }
+        for(int i =0;i<original.size();i++){
+            System.out.println("Process "+i+":");
+            int B = (int) input.get(i).get(1);
+
+            }
+        }
 
 
-        int a = 1241;
-        return 0;
-    }
 
 
-
-    private static float rr(List original, List input) throws Exception {
+    private static void rr(List<List> original, List<List> input) throws Exception {
 
 
         String input_line = "";
 
         int a = 1234;
-        return 0;
+
     }
 
-    private static float sjf(List original, List input) throws Exception {
+    private static void sjf(List<List> original, List<List> input) throws Exception {
 
-        String input_line = "";
+    }
+    private static void hprn(List<List> original, List<List> input) throws Exception {
 
-        return 0;
+
     }
 
-    private static float hprn(List original, List input) throws Exception {
-
-
-        String input_line = "";
-
-        return 0;
-    }
 
     public static void main(String[] args) throws Exception {
-        String randomFileName = "random-numbers.txt";
-        String inputFileName = "input5";
-        File randomFile = new File(randomFileName);
+
+        String inputFileName = "input3";
+
         File inputFile = new File(inputFileName);
         Scanner in = new Scanner(inputFile);
         List<List> original = new ArrayList<List>();
