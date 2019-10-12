@@ -15,7 +15,7 @@ public class lab2 {
         }
     }
 
-    private static float randomOS(int U) {
+    private static int randomOS(int U) {
         String X = random.nextLine();
         return 1 + (Integer.parseInt(X) % U);
     }
@@ -48,21 +48,51 @@ public class lab2 {
             System.out.print(")");
         }
     }
+    static List<String> state=Arrays.asList("unstarted","ready","blocked","running","terminated");
 
+    private static HashMap<Integer,Integer> get_in(List<List> input){
+        HashMap<Integer,Integer> in = new HashMap<Integer,Integer>();
+        for(int i=0;i<input.size();i++){
+            in.put(i,(int)input.get(i).get(2));
+        }
+        return in;
+    }
+    private static HashMap<Integer,List> get_time(List<List> input){
+        HashMap<Integer,List> time=new HashMap<Integer,List>();
+        for(int i=0;i<input.size();i++) {
+            time.put(i, Arrays.asList(0,0,0, 0, 0)); //State (unstart=0,ready=1,blocked=2,running=3), state time,Turnaround time, I/O time, Waiting time
+        }
+        return time;
+    }
     private static void fcfs(List<List> original, List<List> input) throws Exception {
+        random= new Scanner(randomFile);
         printIntro(original, input);
         System.out.println();
         System.out.println("The scheduling algorithm used was First Come First Served");
         System.out.println();
         int count=original.size();
         int p=0;
+        HashMap<Integer,Integer> in =get_in(input);
+        HashMap<Integer,List> time =get_time(input);
+        Queue<Integer> q=new LinkedList<>();
+        int B;
+        q.add(0);
         while (true){
-            if(detail){System.out.print("Before cycle   "+p);}
+            if(!detail){System.out.print("Before cycle   "+p+":");
+            for (int i=0;i<input.size();i++){
+                System.out.print("  "+state.get((int)time.get(i).get(0))+" "+(int)time.get(i).get(1));
+            }
+
+            System.out.println(".");}
+            int curr=q.poll();
+            B=randomOS((int)input.get(curr).get(1));
             if(count==0)break;
+            if (p==9)break;
+            p+=1;
         }
         for(int i =0;i<original.size();i++){
             System.out.println("Process "+i+":");
-            int B = (int) input.get(i).get(1);
+            B = (int) input.get(i).get(1);
 
             }
         }
