@@ -74,18 +74,64 @@ public class lab2 {
         int p=0;
         HashMap<Integer,Integer> in =get_in(input);
         HashMap<Integer,List> time =get_time(input);
+        List<List<Integer>> runblock=new ArrayList<>();
+        for(int i=0;i<input.size();i++){
+            List<Integer> l=new ArrayList<>();
+            l.add(0);
+            l.add(0);
+            runblock.add(l);
+        }
         Queue<Integer> q=new LinkedList<>();
         int B;
+        int cpuBurst;
+        int ioBurst;
+        int cpuSum=0;
+        for(int i=0;i<in.size();i++){
+            cpuSum+=in.get(i);
+        }
+        int prev=-1;
+        int n=input.size();
         q.add(0);
         while (true){
             if(!detail){System.out.print("Before cycle   "+p+":");
             for (int i=0;i<input.size();i++){
                 System.out.print("  "+state.get((int)time.get(i).get(0))+" "+(int)time.get(i).get(1));
             }
-
             System.out.println(".");}
             int curr=q.poll();
-            B=randomOS((int)input.get(curr).get(1));
+            cpuBurst=randomOS((int)input.get(curr).get(1));
+            System.out.println("Random OS:  "+cpuBurst);
+            ioBurst=cpuBurst*(int) input.get(curr).get(3);
+            if(cpuBurst<cpuSum) cpuBurst=cpuSum;
+            for(int i=0;i<cpuBurst;i++){
+                if(i==0){
+                    time.get(curr).set(0,3);
+                    time.get(curr).set(1,cpuBurst);
+                    runblock.get(curr).set(0,cpuBurst);
+                    runblock.get(curr).set(1,ioBurst);
+                    if(prev!=-1){
+                        time.get(prev).set(0,2);
+                        time.get(prev).set(1,runblock.get(prev).get(1));
+                    }
+                }
+                else{}
+                for(int j=0;j<n;j++){
+                    if(j!=curr && j!=prev){
+                        int state=(int)time.get(j).get(0);
+                        int num=(int)time.get(j).get(1);
+                        if(state==0 && p==(int)input.get(j).get(0)) time.get(j).set(0,1);
+
+                    }
+                }
+
+            }
+            prev=curr;
+            for(int i=0;i<n;i++){
+                curr+=1;
+                if(curr>=n) curr=0;
+                if((int)input.get(curr).get(0)>p && true){}//change curr
+
+            }
             if(count==0)break;
             if (p==9)break;
             p+=1;
