@@ -106,23 +106,27 @@ public class lab2 {
             for(int i=0;i<cpuBurst;i++){
                 if(i==0){
                     time.get(curr).set(0,3);
-                    time.get(curr).set(1,cpuBurst);
-                    runblock.get(curr).set(0,cpuBurst);
-                    runblock.get(curr).set(1,ioBurst);
+                    time.get(curr).set(1,cpuBurst+1);
+                    runblock.get(curr).set(0,cpuBurst+1);
+                    runblock.get(curr).set(1,ioBurst+1);
                     if(prev!=-1){
                         time.get(prev).set(0,2);
                         time.get(prev).set(1,runblock.get(prev).get(1));
                     }
-                }
-                else{
-                    
                 }
                 for(int j=0;j<n;j++){
                     if(j!=curr && j!=prev){
                         int state=(int)time.get(j).get(0);
                         int num=(int)time.get(j).get(1);
                         if(state==0 && p==(int)input.get(j).get(0)) time.get(j).set(0,1);
+                    }
 
+                    if((int)time.get(j).get(1)>0){
+                        time.get(j).set(1,(int)time.get(j).get(1)-1);
+                        runblock.get(j).set(1,runblock.get(j).get(1)-1);
+                    }
+                    if((int)input.get(j).get(0)>=p && (int)time.get(j).get(0)==2 && (int)runblock.get(j).get(1)==0){
+                        time.get(j).set(0,1);
                     }
                 }
 
