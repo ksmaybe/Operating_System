@@ -102,7 +102,7 @@ public class lab2 {
             cpuBurst=randomOS((int)input.get(curr).get(1));
             System.out.println("Random OS:  "+cpuBurst);
             ioBurst=cpuBurst*(int) input.get(curr).get(3);
-            if(cpuBurst<cpuSum) cpuBurst=cpuSum;
+            if(cpuBurst>cpuSum) cpuBurst=cpuSum;
             for(int i=0;i<cpuBurst;i++){
                 if(i==0){
                     time.get(curr).set(0,3);
@@ -114,7 +114,9 @@ public class lab2 {
                         time.get(prev).set(1,runblock.get(prev).get(1));
                     }
                 }
-                else{}
+                else{
+                    
+                }
                 for(int j=0;j<n;j++){
                     if(j!=curr && j!=prev){
                         int state=(int)time.get(j).get(0);
@@ -129,11 +131,13 @@ public class lab2 {
             for(int i=0;i<n;i++){
                 curr+=1;
                 if(curr>=n) curr=0;
-                if((int)input.get(curr).get(0)>p && true){}//change curr
+                if((int)input.get(curr).get(0)>=p && (int)time.get(curr).get(1)==0){
+                    q.add(curr);
+                    break;
+                }//change curr
 
             }
             if(count==0)break;
-            if (p==9)break;
             p+=1;
         }
         for(int i =0;i<original.size();i++){
