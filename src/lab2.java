@@ -60,7 +60,7 @@ public class lab2 {
     private static HashMap<Integer,List> get_time(List<List> input){
         HashMap<Integer,List> time=new HashMap<Integer,List>();
         for(int i=0;i<input.size();i++) {
-            time.put(i, Arrays.asList(0,0,0, 0, 0)); //State (unstart=0,ready=1,blocked=2,running=3), state time,Turnaround time, I/O time, Waiting time
+            time.put(i, Arrays.asList(0,0,0, 0, 0)); //State (unstart=0,ready=1,blocked=2,running=3,terminated=4), state time,Turnaround time, I/O time, Waiting time
         }
         return time;
     }
@@ -71,7 +71,7 @@ public class lab2 {
         System.out.println("The scheduling algorithm used was First Come First Served");
         System.out.println();
         int count=original.size();
-        int p=0;
+        int p=1;
         HashMap<Integer,Integer> in =get_in(input);
         HashMap<Integer,List> time =get_time(input);
         List<List<Integer>> runblock=new ArrayList<>();
@@ -92,57 +92,70 @@ public class lab2 {
         int prev=-1;
         int n=input.size();
         q.add(0);
-        while (true){
-            if(!detail){System.out.print("Before cycle   "+p+":");
-            for (int i=0;i<input.size();i++){
-                System.out.print("  "+state.get((int)time.get(i).get(0))+" "+(int)time.get(i).get(1));
+        if(!detail){System.out.print("Before cycle   0:");
+            for (int k=0;k<input.size();k++){
+                System.out.print("  "+state.get(0)+"  "+0);
             }
             System.out.println(".");}
+        while (true){
             int curr=q.poll();
             cpuBurst=randomOS((int)input.get(curr).get(1));
-            System.out.println("Random OS:  "+cpuBurst);
             ioBurst=cpuBurst*(int) input.get(curr).get(3);
+            System.out.println("runblock:   "+cpuBurst+"    "+ioBurst);
             if(cpuBurst>cpuSum) cpuBurst=cpuSum;
+            runblock.get(curr).set(0,cpuBurst);
+            runblock.get(curr).set(1,ioBurst);
+            System.out.println("runblock curr:   "+runblock.get(curr).get(0)+"  "+runblock.get(curr).get(1));
             for(int i=0;i<cpuBurst;i++){
+
                 if(i==0){
+
                     time.get(curr).set(0,3);
-                    time.get(curr).set(1,cpuBurst+1);
-                    runblock.get(curr).set(0,cpuBurst+1);
-                    runblock.get(curr).set(1,ioBurst+1);
+                    time.get(curr).set(1,cpuBurst);
                     if(prev!=-1){
                         time.get(prev).set(0,2);
                         time.get(prev).set(1,runblock.get(prev).get(1));
+                        System.out.println("runblock prev:   "+runblock.get(prev).get(0)+"  "+runblock.get(prev).get(1));
                     }
+                    System.out.println("curr prev:   "+curr+"    "+prev);
                 }
                 for(int j=0;j<n;j++){
                     if(j!=curr && j!=prev){
-                        int state=(int)time.get(j).get(0);
-                        int num=(int)time.get(j).get(1);
-                        if(state==0 && p==(int)input.get(j).get(0)) time.get(j).set(0,1);
+                    if((int)input.get(j).get(0)<=p &&  (int)time.get(j).get(0)==0|| (int)input.get(j).get(0)<p&&(int)time.get(j).get(0)==2&&(int)time.get(j).get(1)==0){
+                    time.get(j).set(0,1);}
+                }}
+                if(!detail){System.out.print("Before cycle   "+p+":");
+                    for (int k=0;k<n;k++){
+                        System.out.print("  "+state.get((int)time.get(k).get(0))+"      "+time.get(k).get(1));
                     }
+                    System.out.println(".");}
+                for(int j=0;j<n;j++){
+                    int state=(int)time.get(j).get(0);
+                    int num=(int)time.get(j).get(1);
+                    if(j!=curr && j!=prev){
+                            //if(state==0 && p==(int)input.get(j).get(0)) time.get(j).set(0,1);
+                        }
 
                     if((int)time.get(j).get(1)>0){
                         time.get(j).set(1,(int)time.get(j).get(1)-1);
-                        runblock.get(j).set(1,runblock.get(j).get(1)-1);
                     }
-                    if((int)input.get(j).get(0)>=p && (int)time.get(j).get(0)==2 && (int)runblock.get(j).get(1)==0){
-                        time.get(j).set(0,1);
-                    }
+
+                    if(state==3) cpuSum-=1;
                 }
+                p+=1;
 
             }
             prev=curr;
             for(int i=0;i<n;i++){
                 curr+=1;
                 if(curr>=n) curr=0;
-                if((int)input.get(curr).get(0)>=p && (int)time.get(curr).get(1)==0){
+                if((int)input.get(curr).get(0)<=p && (int)time.get(curr).get(1)==0){
                     q.add(curr);
                     break;
                 }//change curr
 
             }
-            if(count==0)break;
-            p+=1;
+            if(cpuSum<=0)break;
         }
         for(int i =0;i<original.size();i++){
             System.out.println("Process "+i+":");
@@ -174,7 +187,7 @@ public class lab2 {
 
     public static void main(String[] args) throws Exception {
 
-        String inputFileName = "input3";
+        String inputFileName = "input1";
 
         File inputFile = new File(inputFileName);
         Scanner in = new Scanner(inputFile);
