@@ -60,7 +60,7 @@ public class lab2 {
     private static HashMap<Integer,List> get_time(List<List> input){
         HashMap<Integer,List> time=new HashMap<Integer,List>();
         for(int i=0;i<input.size();i++) {
-            time.put(i, Arrays.asList(0,0,0, 0, 0)); //State (unstart=0,ready=1,blocked=2,running=3,terminated=4), state time,Turnaround time, I/O time, Waiting time
+            time.put(i, Arrays.asList(0,0, 0, 0)); //State (unstart=0,ready=1,blocked=2,running=3,terminated=4), state time, I/O time, Waiting time
         }
         return time;
     }
@@ -75,19 +75,23 @@ public class lab2 {
         HashMap<Integer,Integer> in =get_in(input);
         HashMap<Integer,List> time =get_time(input);
         List<List<Integer>> runblock=new ArrayList<>();
+        List<Integer> runtime=new ArrayList<>();
         for(int i=0;i<input.size();i++){
             List<Integer> l=new ArrayList<>();
             l.add(0);
             l.add(0);
             runblock.add(l);
+            runtime.add((int)input.get(i).get(2));
         }
         Queue<Integer> q=new LinkedList<>();
+        List<Integer> finish=new ArrayList<>();
         int B;
         int cpuBurst;
         int ioBurst;
         int cpuSum=0;
         for(int i=0;i<in.size();i++){
             cpuSum+=in.get(i);
+            finish.add(0);
         }
         int prev=-1;
         int n=input.size();
@@ -151,24 +155,39 @@ public class lab2 {
                     if (num > 0) {
                         time.get(j).set(1, num - 1);
                     }
+                    System.out.println(p+": "+state+"   "+(int)time.get(j).get(1));
+                    if (state == 3) {
+                        cpuSum -= 1;
+                        runtime.set(j,runtime.get(j)-1);
+                        if(runtime.get(j)==0){
+                            time.get(j).set(0,4);
+                            finish.set(j,p);
+                    }}
+                    if (state == 2) {
+                        time.get(j).set(2,(int)time.get(j).get(2)+1);}
+                    if (state == 1) {
+                        time.get(j).set(3,(int)time.get(j).get(3)+1);}
 
-                    if (state == 3) cpuSum -= 1;
                 }
                 p += 1;
                 z++;
+                System.out.println("curr:   "+z+"    prev:   "+cycle);
+
                 if (cpuSum <= 0) break;
                 if (p >= 20) break;
                 if (z == cycle) {
                     prev = curr;
                     for (int i = 0; i < n; i++) {
                         curr += 1;
+
                         if (curr >= n) curr = 0;
+                        if (prev == curr && (int) time.get(curr).get(0) == 3) cycle += 1;
                         if ((int) input.get(curr).get(0) <= p && (int) time.get(curr).get(1) == 0) {
                             q.add(curr);
                             break;
                         }//change curr
                     }
-                    if (prev == curr && (int) time.get(curr).get(0) == 3) cycle += 1;
+
                 }}
                 if (cpuSum <= 0) break;
                 if (p >= 20) break;
@@ -176,7 +195,10 @@ public class lab2 {
         }
         for(int i =0;i<original.size();i++){
             System.out.println("Process "+i+":");
-            B = (int) input.get(i).get(1);
+            System.out.println("Finishing time: "+finish.get(i));
+            System.out.println("Turnaround time: "+(finish.get(i)-(int)input.get(i).get(0)));
+            System.out.println("I/O time: "+(int)time.get(i).get(2));
+            System.out.println("Waiting time: "+(int)time.get(i).get(3));
 
             }
         }
