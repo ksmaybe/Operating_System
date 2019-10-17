@@ -288,12 +288,14 @@ public class lab2 {
         HashMap<Integer,List> time =get_time(input);
         List<List<Integer>> runblock=new ArrayList<>();
         List<Integer> runtime=new ArrayList<>();
+        List<Integer> thisRun=new ArrayList<>();
         for(int i=0;i<input.size();i++){
             List<Integer> l=new ArrayList<>();
             l.add(0);
             l.add(0);
             runblock.add(l);
             runtime.add((int)input.get(i).get(2));
+            thisRun.add(0);
         }
         Deque<Integer> q=new LinkedList<>();
         List<Integer> finish=new ArrayList<>();
