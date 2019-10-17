@@ -84,7 +84,7 @@ public class lab2 {
             runblock.add(l);
             runtime.add((int)input.get(i).get(2));
         }
-        Queue<Integer> q=new LinkedList<>();
+        Deque<Integer> q=new LinkedList<>();
         List<Integer> finish=new ArrayList<>();
         int cpuBurst;
         int ioBurst;
@@ -151,6 +151,7 @@ public class lab2 {
                     System.out.println(".");
                 }
                 int block=0;
+                int readys=0;
                 boolean allBlocked=false;
                 int blocks=0;
                 for (int j = 0; j < n; j++) {
@@ -186,6 +187,7 @@ public class lab2 {
                         time.get(j).set(2,(int)time.get(j).get(2)+1); //TODO fix cycle 11
                         if((int)time.get(j).get(1)==0) {
                             time.get(j).set(0,1);
+                            readys+=1;
                             q.add(j);
                         }
                     }
@@ -193,10 +195,24 @@ public class lab2 {
                         time.get(j).set(3,(int)time.get(j).get(3)+1);}
                     if(state==0) blocks+=1;
                 }
-                if(blocks==n) allBlocked=true;
+                if(blocks==n && readys==0) allBlocked=true;
+
                 blockTime+=block;
+                System.out.println(blocks+" "+readys);
                 p += 1;
                 z++;
+
+                if(blocks==n && readys==1){
+                    for(int k=0;k<n;k++){
+                        if((int)time.get(k).get(0)==1){
+
+                            q.remove(k);
+                            q.addFirst(k);
+                            break;
+                        }
+                    }
+                }
+
                 //System.out.println("curr:   "+z+"    prev:   "+cycle);
 
                 if (cpuSum <= 0) break;
