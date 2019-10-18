@@ -17,7 +17,7 @@ public class lab2 {
 
     private static int randomOS(int U) {
         String X = random.nextLine();
-        System.out.println("Random: "+X);
+        System.out.println("Random: "+X+"   1   "+ (Integer.parseInt(X) % U));
         return 1 + (Integer.parseInt(X) % U);
     }
     private static void printIntro(List<List> original, List<List> input) {
@@ -331,7 +331,7 @@ public class lab2 {
             runblock.get(carryover).set(0, cpuBurst);
             runblock.get(carryover).set(1, ioBurst);
             //System.out.println("runblock curr:   "+runblock.get(curr).get(0)+"  "+runblock.get(curr).get(1));
-            int cycle = cpuBurst;
+            int cycle = Math.min(cpuBurst,2);
             int z = 0;
             int r=0;
             while (z < cycle) {
@@ -346,10 +346,10 @@ public class lab2 {
                     }
                     //System.out.println("curr prev:   "+curr+"    "+prev);
                 }
-                if (prev == carryover && (int) time.get(prev).get(0) == 3 && (int) runblock.get(prev).get(0) == 0) {
-                    time.get(prev).set(0, 2);
-                    time.get(prev).set(1, runblock.get(prev).get(1));
-                }
+//                if (prev == carryover && (int) time.get(prev).get(0) == 3 && (int) runblock.get(prev).get(0) == 0) {
+//                    time.get(prev).set(0, 2);
+//                    time.get(prev).set(1, runblock.get(prev).get(1));
+//                }
 
                 for (int j = 0; j < n; j++) {
                     if (j != carryover && j != prev) {
@@ -405,21 +405,33 @@ public class lab2 {
 
 
                         else if(num-1==0){
+                            if(runblock.get(j).get(0)>0 && (int)time.get(j).get(0)==3){
+
+                                time.get(j).set(0, 1);
+                                time.get(j).set(1, 0);}
+                            else if(runblock.get(j).get(0)==0 && (int)time.get(j).get(0)==3){
+                                blocks+=1;
+                                time.get(j).set(0,2);
+                                time.get(j).set(1,runblock.get(j).get(1));}
                             for(int kk=0;kk<n;kk++){
                                 curr+=1;
                                 if(curr==n) curr=0;
-                                if((int)time.get(curr).get(0)==1){
+                                if((int)time.get(curr).get(0)==1 && runblock.get(curr).get(0)==0){
+                                    //q.add(curr);
                                     break;
                                 }
-                            }
 
-                            if(runblock.get(j).get(0)>0){
-                            time.get(j).set(0, 1);
-                            time.get(j).set(1, 0);}
-                            else{
-                                blocks+=1;
-                                time.get(j).set(0,2);
-                                time.get(j).set(1,runblock.get(j).get(1));
+                                else if((int)time.get(curr).get(0)==1 && runblock.get(curr).get(0)>0){
+                                    System.out.println(curr+"   "+Math.min(2,runblock.get(curr).get(0)));
+                                    time.get(curr).set(0,3);
+                                    time.get(curr).set(1,Math.min(2,runblock.get(curr).get(0)));
+                                    cycle+=Math.min(2,runblock.get(curr).get(0));
+                                    break;
+                                }
+
+
+
+
                             }
                             //q.addLast(j);
                         }
@@ -434,7 +446,7 @@ public class lab2 {
                 if(blocks==n && readys==0) allBlocked=true;
 
                 blockTime+=block;
-                //System.out.println("blocks: "+blocks+" readys:  "+readys+"  n:  "+n+"   z:  "+z+"cycle: "+cycle+allBlocked);
+                //System.out.println("blocks: "+blocks+" readys:  "+readys+"  n:  "+n+"   z:  "+z+"   cycle: "+cycle+allBlocked);
                 p += 1;
                 z++;
 
@@ -446,7 +458,7 @@ public class lab2 {
 //                    System.out.println("\t" + iterator.next());
                 if (cpuSum <= 0) break;
 
-                if (z == cycle || allBlocked) {
+                if (z == cycle) {
 
 //                    for (int i = 0; i < n; i++) {
 //                        curr += 1;
@@ -458,7 +470,7 @@ public class lab2 {
 //                            break;
 //                        }//change curr
 
-                    if(allBlocked)
+                    if(allBlocked || readys>0)
                     {   z=cycle;
                         cycle+=1;
                         //if(cycle>2) cycle=2;
@@ -469,10 +481,13 @@ public class lab2 {
             for(int i=0;i<n;i++){
                 carryover+=1;
                 if(carryover==n) carryover=0;
-                if((int)time.get(carryover).get(0)==1 && runtime.get(carryover)>0);
+                if((int)time.get(carryover).get(0)==1 && runtime.get(carryover)>0){
+                    q.add(carryover);
+                    break;
+                }
             }
             if (cpuSum <= 0) break;
-            //if(p>200) break;
+            if(p>30) break;
 
         }
         System.out.println();
