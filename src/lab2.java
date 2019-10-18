@@ -352,13 +352,14 @@ public class lab2 {
 //                }
 
                 for (int j = 0; j < n; j++) {
+
                     if (j != carryover && j != prev) {
                         if ((int) input.get(j).get(0) < p && (int) time.get(j).get(0) == 0 || (int) input.get(j).get(0) < p && (int) time.get(j).get(0) == 2 && (int) time.get(j).get(1) == 0) {
                             time.get(j).set(0, 1);
-                            q.add(j);
                         }
                     }
                 }
+
                 if (!detail) {
                     System.out.print("Before cycle   " + p + ":");
                     for (int k = 0; k < n; k++) {
@@ -371,16 +372,41 @@ public class lab2 {
                 boolean allBlocked=false;
                 int blocks=0;
                 for (int j = 0; j < n; j++) {
+                int num = (int) time.get(j).get(1);
+                //System.out.println((j+"     "+time.get(j).get(1)));
+                if (num > 0) {
+                    time.get(j).set(1, num - 1);
+
+                }}
+                for (int j = 0; j < n; j++) {
+                    //System.out.println((j+"     "+time.get(j).get(0)));
+                    //System.out.println((j+"     "+runblock.get(j).get(0)));
                     int state = (int) time.get(j).get(0);
                     int num = (int) time.get(j).get(1);
-                    if (j != curr && j != prev) {
-                        //if(state==0 && p==(int)input.get(j).get(0)) time.get(j).set(0,1);
+
+//                    if (num > 0) {
+//                        time.get(j).set(1, num - 1);
+//                    }
+                    //System.out.println(p+": "+state+"   "+(int)time.get(j).get(1));
+
+                    if (state == 3) {
+                        r+=1;
+                        cpuSum -= 1;
+                        runtime.set(j,runtime.get(j)-1);
+                        runblock.get(j).set(0,runblock.get(j).get(0)-1);
                     }
 
-                    if (num > 0) {
-                        time.get(j).set(1, num - 1);
-                    }
-                    //System.out.println(p+": "+state+"   "+(int)time.get(j).get(1));
+
+                    if(state==0) blocks+=1;
+                    if(state==4) blocks+=1;
+                }
+                for (int j = 0; j < n; j++) {
+                    int state = (int) time.get(j).get(0);
+                    int num = (int) time.get(j).get(1);
+
+                    if (state == 1) {
+                        readys+=1;
+                        time.get(j).set(3,(int)time.get(j).get(3)+1);}
                     if (state == 2) {
                         block=1;
                         blocks+=1;
@@ -392,10 +418,6 @@ public class lab2 {
                         }
                     }
                     if (state == 3) {
-                        r+=1;
-                        cpuSum -= 1;
-                        runtime.set(j,runtime.get(j)-1);
-                        runblock.get(j).set(0,runblock.get(j).get(0)-1);
                         if(runtime.get(j)==0){
                             blocks+=1;
                             time.get(j).set(0,4);
@@ -404,9 +426,8 @@ public class lab2 {
                             finish.set(j,p);}
 
 
-                        else if(num-1==0){
+                        else if(num==0){
                             if(runblock.get(j).get(0)>0 && (int)time.get(j).get(0)==3){
-
                                 time.get(j).set(0, 1);
                                 time.get(j).set(1, 0);}
                             else if(runblock.get(j).get(0)==0 && (int)time.get(j).get(0)==3){
@@ -417,32 +438,19 @@ public class lab2 {
                                 curr+=1;
                                 if(curr==n) curr=0;
                                 if((int)time.get(curr).get(0)==1 && runblock.get(curr).get(0)==0){
-                                    //q.add(curr);
+                                    q.add(curr);
+                                    z+=999;
                                     break;
                                 }
-
                                 else if((int)time.get(curr).get(0)==1 && runblock.get(curr).get(0)>0){
-                                    System.out.println(curr+"   "+Math.min(2,runblock.get(curr).get(0)));
+        //                                    System.out.println(curr+"   "+Math.min(999,runblock.get(curr).get(0)));
                                     time.get(curr).set(0,3);
                                     time.get(curr).set(1,Math.min(2,runblock.get(curr).get(0)));
                                     cycle+=Math.min(2,runblock.get(curr).get(0));
                                     break;
                                 }
-
-
-
-
                             }
-                            //q.addLast(j);
-                        }
-
-                    }
-
-                    if (state == 1) {
-                        time.get(j).set(3,(int)time.get(j).get(3)+1);}
-                    if(state==0) blocks+=1;
-                    if(state==4) blocks+=1;
-                }
+                }}}
                 if(blocks==n && readys==0) allBlocked=true;
 
                 blockTime+=block;
@@ -457,7 +465,7 @@ public class lab2 {
 //                while (iterator.hasNext())
 //                    System.out.println("\t" + iterator.next());
                 if (cpuSum <= 0) break;
-
+                //System.out.println(("curr:  "+curr+"    "+time.get(curr).get(1)));
                 if (z == cycle) {
 
 //                    for (int i = 0; i < n; i++) {
@@ -470,7 +478,7 @@ public class lab2 {
 //                            break;
 //                        }//change curr
 
-                    if(allBlocked || readys>0)
+                    if(allBlocked)
                     {   z=cycle;
                         cycle+=1;
                         //if(cycle>2) cycle=2;
@@ -478,16 +486,16 @@ public class lab2 {
 
                 }
             }
+            if(q.size()==0){
             for(int i=0;i<n;i++){
-                carryover+=1;
-                if(carryover==n) carryover=0;
-                if((int)time.get(carryover).get(0)==1 && runtime.get(carryover)>0){
-                    q.add(carryover);
+
+                if((int)time.get(i).get(0)==1 && runtime.get(i)>0){
+                    q.add(i);
                     break;
                 }
-            }
+            }}
             if (cpuSum <= 0) break;
-            if(p>30) break;
+            if(p>120) break;
 
         }
         System.out.println();
@@ -528,7 +536,7 @@ public class lab2 {
 
     public static void main(String[] args) throws Exception {
 
-        String inputFileName = "input4";
+        String inputFileName = "input5";
 
         File inputFile = new File(inputFileName);
         Scanner in = new Scanner(inputFile);
