@@ -356,6 +356,7 @@ public class lab2 {
                     if (j != carryover && j != prev) {
                         if ((int) input.get(j).get(0) < p && (int) time.get(j).get(0) == 0 || (int) input.get(j).get(0) < p && (int) time.get(j).get(0) == 2 && (int) time.get(j).get(1) == 0) {
                             time.get(j).set(0, 1);
+                            q.add(j);
                         }
                     }
                 }
@@ -376,8 +377,11 @@ public class lab2 {
                 //System.out.println((j+"     "+time.get(j).get(1)));
                 if (num > 0) {
                     time.get(j).set(1, num - 1);
+                    //System.out.println(j+"    "+num);
 
                 }}
+                boolean go=false;
+
                 for (int j = 0; j < n; j++) {
                     //System.out.println((j+"     "+time.get(j).get(0)));
                     //System.out.println((j+"     "+runblock.get(j).get(0)));
@@ -412,52 +416,57 @@ public class lab2 {
                         blocks+=1;
                         time.get(j).set(2,(int)time.get(j).get(2)+1);
                         if((int)time.get(j).get(1)==0) {
+                            q.add(j);
                             time.get(j).set(0,1);
                             readys+=1;
-
                         }
                     }
                     if (state == 3) {
                         if(runtime.get(j)==0){
+                            go=true;
                             blocks+=1;
                             time.get(j).set(0,4);
                             time.get(j).set(1,0);
-                            z+=999;
                             finish.set(j,p);}
 
 
                         else if(num==0){
-                            if(runblock.get(j).get(0)>0 && (int)time.get(j).get(0)==3){
+                            go=true;
+                            if(runblock.get(j).get(0)>0){
+                                q.add(j);
                                 time.get(j).set(0, 1);
                                 time.get(j).set(1, 0);}
-                            else if(runblock.get(j).get(0)==0 && (int)time.get(j).get(0)==3){
+                            else if(runblock.get(j).get(0)==0){
                                 blocks+=1;
                                 time.get(j).set(0,2);
                                 time.get(j).set(1,runblock.get(j).get(1));}
-                            for(int kk=0;kk<n;kk++){
-                                curr+=1;
-                                if(curr==n) curr=0;
-                                if((int)time.get(curr).get(0)==1 && runblock.get(curr).get(0)==0){
-                                    q.add(curr);
-                                    z+=999;
-                                    break;
-                                }
-                                else if((int)time.get(curr).get(0)==1 && runblock.get(curr).get(0)>0){
-        //                                    System.out.println(curr+"   "+Math.min(999,runblock.get(curr).get(0)));
-                                    time.get(curr).set(0,3);
-                                    time.get(curr).set(1,Math.min(2,runblock.get(curr).get(0)));
-                                    cycle+=Math.min(2,runblock.get(curr).get(0));
-                                    break;
-                                }
-                            }
+
                 }}}
                 if(blocks==n && readys==0) allBlocked=true;
-
                 blockTime+=block;
                 //System.out.println("blocks: "+blocks+" readys:  "+readys+"  n:  "+n+"   z:  "+z+"   cycle: "+cycle+allBlocked);
                 p += 1;
                 z++;
+//                if(q.size()==0){
+//                    for(int i=0;i<n;i++){
+//                        if((int)time.get(i).get(0)==1 && runtime.get(i)>0){
+//                            q.add(i);
+//                            break;
+//                        }
+//                    }
+//                }
+                if(go) {
+                    if(q.size()>0){
+                    curr=q.peek();
+                    //System.out.println("curr:   "+curr+"    time:   "+runblock.get(curr).get(0));
+                    if(runblock.get(curr).get(0)>0 && (int)time.get(curr).get(0)==1){
+                            curr=q.poll();
+                            time.get(curr).set(0,3);
+                            time.get(curr).set(1,Math.min(2,runblock.get(curr).get(0)));
+                            cycle+=Math.min(2,runblock.get(curr).get(0));}
+                    else if(runblock.get(curr).get(0)==0 && (int)time.get(curr).get(0)==1) z+=999;
 
+                }}
 
                 //System.out.println("curr:   "+z+"    prev:   "+cycle);
                 //iterator for deque
@@ -486,21 +495,22 @@ public class lab2 {
 
                 }
             }
-            if(q.size()==0){
-            for(int i=0;i<n;i++){
-
-                if((int)time.get(i).get(0)==1 && runtime.get(i)>0){
-                    q.add(i);
-                    break;
-                }
-            }}
+//            if(q.size()==0){
+//                for(int i=0;i<n;i++){
+//
+//                    if((int)time.get(i).get(0)==1 && runtime.get(i)>0){
+//                        q.add(i);
+//                        break;
+//                    }
+//                }}
             if (cpuSum <= 0) break;
-            if(p>120) break;
+            //if(p>1205) break;
 
         }
         System.out.println();
         int turnaroundTime=0;
         int waitTime=0;
+        //Print for each process
         for(int i =0;i<n;i++){
             System.out.println("Process "+i+":");
             System.out.println("(A,B,C,M) = ("+input.get(i).get(0)+","+input.get(i).get(1)+","+input.get(i).get(2)+","+input.get(i).get(3)+")");
@@ -511,7 +521,6 @@ public class lab2 {
             System.out.println("Waiting time: "+(int)time.get(i).get(3));
             waitTime+=(int)time.get(i).get(3);
             System.out.println();
-
         }
         p-=1;
         System.out.println("Summary Data:");
@@ -536,7 +545,7 @@ public class lab2 {
 
     public static void main(String[] args) throws Exception {
 
-        String inputFileName = "input5";
+        String inputFileName = "input7";
 
         File inputFile = new File(inputFileName);
         Scanner in = new Scanner(inputFile);
