@@ -1,0 +1,12 @@
+To compile:
+javac -Xlint lab2.java
+
+To run:
+
+for no details:
+java lab2 (input name)
+eg. java lab2 input1
+
+for details:
+java lab2 --verbose (input name)
+eg. java lab2 --verbose input1
