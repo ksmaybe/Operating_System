@@ -14,7 +14,12 @@ public class lab3 {
             e.printStackTrace();
         }
     }
+    public static void fifo(List resources,List input){
 
+    }
+    public static void banker(List resources,List input){
+
+    }
     public static void main(String[] args) throws Exception {
         //System.out.println(args.length);
         String inputFileName;
