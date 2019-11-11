@@ -16,9 +16,11 @@ public class lab3 {
             e.printStackTrace();
         }
     }
-    public static void fifo(List resources,List input){
+    public static void fifo(List resources,List<List<List>> input){
         List<Integer> need=new ArrayList<Integer>();
-        for(int j=0;j<length(input);j++){need.add(input.get(j).get(0).get(4))}
+        for(int j=0;j<length(input);j++){
+            need.add((int)input.get(j).get(0).get(4));
+        }
         for(int i=1;i<length(input.get(0))-1;i++){
             for(int j=0;j<length(input);j++){
 
@@ -44,7 +46,7 @@ public class lab3 {
         File inputFile = new File(inputFileName);
         Scanner in = new Scanner(inputFile);
         List<Integer> resources = new ArrayList<Integer>();
-        List<List> input = new ArrayList<List>();
+        List<List<List>> input = new ArrayList<List<List>>();
         int n=in.nextInt();
         int r=in.nextInt();
         int a=in.nextInt();
@@ -73,7 +75,7 @@ public class lab3 {
             }
             input.get(s).add(l);
         }
-        fifo(resources,input);
+        fifo(resources, input);
 
 
 //        for (List<Integer> l1 : input) {
