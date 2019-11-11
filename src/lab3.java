@@ -17,8 +17,12 @@ public class lab3 {
         }
     }
     public static void fifo(List resources,List input){
-        for(int i=0;i<length(input.get(0));i++){
+        List<Integer> need=new ArrayList<Integer>();
+        for(int j=0;j<length(input);j++){need.add(input.get(j).get(0).get(4))}
+        for(int i=1;i<length(input.get(0))-1;i++){
+            for(int j=0;j<length(input);j++){
 
+            }
         }
     }
     public static void banker(List resources,List input){
