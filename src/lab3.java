@@ -18,12 +18,37 @@ public class lab3 {
     }
     public static void fifo(List resources,List<List<List>> input){
         List<Integer> need=new ArrayList<Integer>();
+        List<Integer> finish=new ArrayList<Integer>();
+        List<Integer> wait=new ArrayList<Integer>();
+        List<List<Integer>> claimed= new ArrayList<List<Integer>>();
+
         for(int j=0;j<length(input);j++){
             need.add((int)input.get(j).get(0).get(4));
+            finish.add(0);
+            wait.add(0);
+            List<Integer> res=new ArrayList<Integer>();
+            for (int k=0;k<length(resources);k++){
+                res.add(0);
+            }
+            claimed.add(res);
         }
         for(int i=1;i<length(input.get(0))-1;i++){
             for(int j=0;j<length(input);j++){
-
+                int p=(int)input.get(j).get(i).get(0);
+                int t=(int)input.get(j).get(i).get(1);
+                int r=(int)input.get(j).get(i).get(2);
+                int n=(int)input.get(j).get(i).get(3);
+                if(p==2) {
+                    if((int)resources.get(r-1)>=n){
+                        resources.set(r-1,(int)resources.get(r-1)-n);
+                        claimed.get(t-1).set(r-1,claimed.get(t-1).get(r-1)+n);
+                    }
+                }else if(p==3){
+                    resources.set(r-1,(int)resources.get(r-1)+n);
+                    claimed.get(t-1).set(r-1,claimed.get(t-1).get(r-1)-n);
+                }else if(p==4){
+                    finish.set(j-1,i+1);
+                }
             }
         }
     }
