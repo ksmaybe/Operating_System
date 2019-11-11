@@ -1,6 +1,8 @@
 import java.io.*;
 import java.util.*;
 
+import static jdk.nashorn.internal.objects.ArrayBufferView.length;
+
 public class lab3 {
     static String randomFileName = "random-numbers.txt";
     static File randomFile = new File(randomFileName);
@@ -15,7 +17,9 @@ public class lab3 {
         }
     }
     public static void fifo(List resources,List input){
+        for(int i=0;i<length(input.get(0));i++){
 
+        }
     }
     public static void banker(List resources,List input){
 
@@ -43,7 +47,30 @@ public class lab3 {
         for(int i=0;i<r;i++){
             resources.add(a);
         }
-        //1-initiate, 2-request,  3-release, 4- terminate
+        for(int i=0;i<n;i++) {
+            List<List> l=new ArrayList<List>();
+            input.add(l);
+        } //1-initiate, 2-request,  3-release, 4- terminate
+        while(in.hasNext()){
+            List<Integer> l=new ArrayList<Integer>();
+            String t=in.next();
+            if(t=="initiate"){
+                l.add(1);
+            }else if(t=="request"){
+                l.add(2);
+            }else if(t=="release"){
+                l.add(3);
+            }else if(t=="terminate"){
+                l.add(4);
+            }
+            int s=in.nextInt();
+            for(int j=0;j<2;j++){
+                l.add(in.nextInt());
+            }
+            input.get(s).add(l);
+        }
+        fifo(resources,input);
+
 
 //        for (List<Integer> l1 : input) {
 //            for (Integer inte : l1) {
