@@ -17,10 +17,15 @@ public class lab3 {
         }
     }
     public static void fifo(List resources,List<List<List>> input){
+        List<Integer> resReturn=new ArrayList<Integer>();
+        for(int i=0;i<length(resources);i++){
+            resReturn.add(0);
+        }
         List<Integer> need=new ArrayList<Integer>();
         List<Integer> finish=new ArrayList<Integer>();
         List<Integer> wait=new ArrayList<Integer>();
         List<List<Integer>> claimed= new ArrayList<List<Integer>>();
+        int unfinished=length(input);
 
         for(int j=0;j<length(input);j++){
             need.add((int)input.get(j).get(0).get(4));
@@ -32,32 +37,62 @@ public class lab3 {
             }
             claimed.add(res);
         }
-        for(int i=1;i<length(input.get(0))-1;i++){
+        int i=1;
+        int runtime=0;
+        while(i<length(input.get(0))){
             int block=0;
+            List<Integer> blocked = new ArrayList<Integer>();
+            boolean returner=false;
             for(int j=0;j<length(input);j++){
-
+                blocked.add(0);
                 int p=(int)input.get(j).get(i).get(0);
                 int t=(int)input.get(j).get(i).get(1);
                 int r=(int)input.get(j).get(i).get(2);
                 int n=(int)input.get(j).get(i).get(3);
-                if(p==2) {
+                if(p==2 && finish.get(j)==0) {//1-initiate, 2-request,  3-release, 4- terminate
                     if((int)resources.get(r-1)>=n){
                         resources.set(r-1,(int)resources.get(r-1)-n);
+                        resReturn.set(r-1,n);
+                        returner=true;
                         claimed.get(t-1).set(r-1,claimed.get(t-1).get(r-1)+n);
                     }
-                    else block+=1;
+                    else {
+                        block+=1;
+                        blocked.set(t-1,1);
+
+                    }
                 }else if(p==3){
-                    resources.set(r-1,(int)resources.get(r-1)+n);
+
                     claimed.get(t-1).set(r-1,claimed.get(t-1).get(r-1)-n);
                 }else if(p==4){
-                    finish.set(j-1,i+1);
+                    finish.set(j-1,runtime+1);
+                    unfinished-=1;
                 }
 
             }
-            if(block==length(input)){
-                continue;//abort first availalbel
-            }
-        }
+            if(returner){
+                for(int j=0;j<length(resources);j++){
+                    resources.set(j,(int)resReturn.get(j)+(int)resources.get(j));
+                    resReturn.set(j,0);
+
+            }}
+            //deadlock abort
+            if(block==unfinished){
+                boolean blocking=true;
+                while(blocking){
+                    boolean b=false;
+                    for(int j=0;j<length(input);j++){
+                        if(blocked.get(j)==1){
+                            for(int k=0;k<length(resources);k++){
+                                resources.set(k,(int)claimed.get(j).get(k)+(int)resources.get(k));
+                                b=true;
+                                break;
+                        }}
+                        if(b) break;
+                    };//abort first availalbel
+            }}
+
+        }runtime+=1;
     }
     public static void banker(List resources,List input){
 
