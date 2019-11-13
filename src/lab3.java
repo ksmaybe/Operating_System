@@ -100,9 +100,8 @@ public class lab3 {
                         int n=(int)input.get(j).get(i).get(3);
                         if(p==2 && finish.get(j)==0) {//1-initiate, 2-request,  3-release, 4- terminate
                             if ((int) resources.get(r - 1) >= n) {
+                                blocking=false;
                                 resources.set(r - 1, (int) resources.get(r - 1) - n);
-                                resReturn.set(r - 1, n);
-                                returner = true;
                                 claimed.get(t - 1).set(r - 1, claimed.get(t - 1).get(r - 1) + n);
                             } else {
                                 block += 1;
@@ -110,15 +109,16 @@ public class lab3 {
                             }
                         }}
 
-            }}
+            }}runtime+=1;
 
         }runtime+=1;
+
     }
     public static void banker(List resources,List input){
 
     }
     public static void main(String[] args) throws Exception {
-        //System.out.println(args.length);
+        //System.out.println(args.length);0
         String inputFileName;
         //System.out.println(args[0]);
 //        if(args.length==1) inputFileName = args[0];
