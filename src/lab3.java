@@ -52,17 +52,16 @@ public class lab3 {
                 if(p==2 && finish.get(j)==0) {//1-initiate, 2-request,  3-release, 4- terminate
                     if((int)resources.get(r-1)>=n){
                         resources.set(r-1,(int)resources.get(r-1)-n);
-                        resReturn.set(r-1,n);
-                        returner=true;
+
                         claimed.get(t-1).set(r-1,claimed.get(t-1).get(r-1)+n);
                     }
                     else {
                         block+=1;
                         blocked.set(t-1,1);
-
                     }
                 }else if(p==3){
-
+                    resReturn.set(r-1,n);
+                    returner=true;
                     claimed.get(t-1).set(r-1,claimed.get(t-1).get(r-1)-n);
                 }else if(p==4){
                     finish.set(j-1,runtime+1);
@@ -83,13 +82,34 @@ public class lab3 {
                     boolean b=false;
                     for(int j=0;j<length(input);j++){
                         if(blocked.get(j)==1){
+                            finish.set(j,-1);
                             for(int k=0;k<length(resources);k++){
+
                                 resources.set(k,(int)claimed.get(j).get(k)+(int)resources.get(k));
                                 b=true;
                                 break;
                         }}
                         if(b) break;
-                    };//abort first availalbel
+                    };//abort lowest number deadlocked task
+                    blocked=new ArrayList<Integer>();
+                    for(int j=0;j<length(input);j++){
+                        blocked.add(0);
+                        int p=(int)input.get(j).get(i).get(0);
+                        int t=(int)input.get(j).get(i).get(1);
+                        int r=(int)input.get(j).get(i).get(2);
+                        int n=(int)input.get(j).get(i).get(3);
+                        if(p==2 && finish.get(j)==0) {//1-initiate, 2-request,  3-release, 4- terminate
+                            if ((int) resources.get(r - 1) >= n) {
+                                resources.set(r - 1, (int) resources.get(r - 1) - n);
+                                resReturn.set(r - 1, n);
+                                returner = true;
+                                claimed.get(t - 1).set(r - 1, claimed.get(t - 1).get(r - 1) + n);
+                            } else {
+                                block += 1;
+                                blocked.set(t - 1, 1);
+                            }
+                        }}
+
             }}
 
         }runtime+=1;
