@@ -18,32 +18,32 @@ public class lab3 {
     }
     public static void fifo(List resources,List<List<List>> input){
         List<Integer> resReturn=new ArrayList<Integer>();
-        for(int i=0;i<length(resources);i++){
+        for(int i=0;i<resources.size();i++){
             resReturn.add(0);
         }
         List<Integer> need=new ArrayList<Integer>();
         List<Integer> finish=new ArrayList<Integer>();
         List<Integer> wait=new ArrayList<Integer>();
         List<List<Integer>> claimed= new ArrayList<List<Integer>>();
-        int unfinished=length(input);
+        int unfinished=input.size();
 
-        for(int j=0;j<length(input);j++){
-            need.add((int)input.get(j).get(0).get(4));
+        for(int j=0;j<input.size();j++){
+            //need.add((int)input.get(j).get(0).get(4));
             finish.add(0);
             wait.add(0);
             List<Integer> res=new ArrayList<Integer>();
-            for (int k=0;k<length(resources);k++){
+            for (int k=0;k<resources.size();k++){
                 res.add(0);
             }
             claimed.add(res);
         }
         int i=1;
         int runtime=0;
-        while(i<length(input.get(0))){
+        while(i<input.get(0).size()){
             int block=0;
             List<Integer> blocked = new ArrayList<Integer>();
             boolean returner=false;
-            for(int j=0;j<length(input);j++){
+            for(int j=0;j<input.size();j++){
                 blocked.add(0);
                 int p=(int)input.get(j).get(i).get(0);
                 int t=(int)input.get(j).get(i).get(1);
@@ -70,7 +70,7 @@ public class lab3 {
 
             }
             if(returner){
-                for(int j=0;j<length(resources);j++){
+                for(int j=0;j<resources.size();j++){
                     resources.set(j,(int)resReturn.get(j)+(int)resources.get(j));
                     resReturn.set(j,0);
 
@@ -80,10 +80,10 @@ public class lab3 {
                 boolean blocking=true;
                 while(blocking){
                     boolean b=false;
-                    for(int j=0;j<length(input);j++){
+                    for(int j=0;j<input.size();j++){
                         if(blocked.get(j)==1){
                             finish.set(j,-1);
-                            for(int k=0;k<length(resources);k++){
+                            for(int k=0;k<resources.size();k++){
 
                                 resources.set(k,(int)claimed.get(j).get(k)+(int)resources.get(k));
                                 b=true;
@@ -92,7 +92,7 @@ public class lab3 {
                         if(b) break;
                     };//abort lowest number deadlocked task
                     blocked=new ArrayList<Integer>();
-                    for(int j=0;j<length(input);j++){
+                    for(int j=0;j<input.size();j++){
                         blocked.add(0);
                         int p=(int)input.get(j).get(i).get(0);
                         int t=(int)input.get(j).get(i).get(1);
@@ -112,7 +112,7 @@ public class lab3 {
             }}runtime+=1;
 
         }runtime+=1;
-    for(int z=0;z<length(input);z++){
+    for(int z=0;z<input.size();z++){
         if(finish.get(z)>0) System.out.println(finish.get(z));
         else System.out.println(String.format(finish.get(z)+"   abort"));
     }
@@ -150,16 +150,18 @@ public class lab3 {
         while(in.hasNext()){
             List<Integer> l=new ArrayList<Integer>();
             String t=in.next();
-            if(t=="initiate"){
+            System.out.println(t);
+            if(t.equals("initiate")){
                 l.add(1);
-            }else if(t=="request"){
+            }else if(t.equals("request")){
                 l.add(2);
-            }else if(t=="release"){
+            }else if(t.equals("release")){
                 l.add(3);
-            }else if(t=="terminate"){
+            }else if(t.equals("terminate")){
                 l.add(4);
             }
             int s=in.nextInt();
+            l.add(s);
             for(int j=0;j<2;j++){
                 l.add(in.nextInt());
             }
