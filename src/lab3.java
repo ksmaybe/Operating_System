@@ -112,7 +112,10 @@ public class lab3 {
             }}runtime+=1;
 
         }runtime+=1;
-
+    for(int z=0;z<length(input);z++){
+        if(finish.get(z)>0) System.out.println(finish.get(z));
+        else System.out.println(String.format(finish.get(z)+"   abort"));
+    }
     }
     public static void banker(List resources,List input){
 
@@ -160,7 +163,7 @@ public class lab3 {
             for(int j=0;j<2;j++){
                 l.add(in.nextInt());
             }
-            input.get(s).add(l);
+            input.get(s-1).add(l);
         }
         fifo(resources, input);
 
