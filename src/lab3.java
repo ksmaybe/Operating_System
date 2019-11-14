@@ -64,7 +64,7 @@ public class lab3 {
                     returner=true;
                     claimed.get(t-1).set(r-1,claimed.get(t-1).get(r-1)-n);
                 }else if(p==4){
-                    finish.set(j-1,runtime+1);
+                    finish.set(j,runtime+1);
                     unfinished-=1;
                 }
 
@@ -75,16 +75,17 @@ public class lab3 {
                     resReturn.set(j,0);
 
             }}
+            System.out.println("block");
             //deadlock abort
-            if(block==unfinished){
+            if(block==unfinished && unfinished>=1){
                 boolean blocking=true;
                 while(blocking){
+                    System.out.println("blocking");
                     boolean b=false;
                     for(int j=0;j<input.size();j++){
                         if(blocked.get(j)==1){
                             finish.set(j,-1);
                             for(int k=0;k<resources.size();k++){
-
                                 resources.set(k,(int)claimed.get(j).get(k)+(int)resources.get(k));
                                 b=true;
                                 break;
@@ -92,6 +93,7 @@ public class lab3 {
                         if(b) break;
                     };//abort lowest number deadlocked task
                     blocked=new ArrayList<Integer>();
+                    System.out.println(Arrays.toString(finish.toArray()));
                     for(int j=0;j<input.size();j++){
                         blocked.add(0);
                         int p=(int)input.get(j).get(i).get(0);
@@ -108,9 +110,9 @@ public class lab3 {
                                 blocked.set(t - 1, 1);
                             }
                         }}
-
             }}runtime+=1;
-
+            System.out.println("unblock");
+            i++;
         }runtime+=1;
     for(int z=0;z<input.size();z++){
         if(finish.get(z)>0) System.out.println(finish.get(z));
@@ -132,7 +134,7 @@ public class lab3 {
 //            if(args[1].compareTo("--verbose")== 60) { //System.out.println("true");
 //                detail=true;}
 //        }
-        inputFileName="input-01";
+        inputFileName="input-02";
         File inputFile = new File(inputFileName);
         Scanner in = new Scanner(inputFile);
         List<Integer> resources = new ArrayList<Integer>();
@@ -150,7 +152,7 @@ public class lab3 {
         while(in.hasNext()){
             List<Integer> l=new ArrayList<Integer>();
             String t=in.next();
-            System.out.println(t);
+            //System.out.println(t);
             if(t.equals("initiate")){
                 l.add(1);
             }else if(t.equals("request")){
@@ -167,6 +169,7 @@ public class lab3 {
             }
             input.get(s-1).add(l);
         }
+        System.out.println("start fifo");
         fifo(resources, input);
 
 
