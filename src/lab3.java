@@ -426,7 +426,7 @@ public class lab3 {
         int n[][]=new int[claim.size()][resources.size()];  //need to complete
         int need[][]=new int[claim.size()][resources.size()]; //initial claim
         int given[][]=new int[claim.size()][resources.size()]; //claimed resources
-        int r[][]=new int[1][resources.size()];             //resource available
+        int r[]=new int[resources.size()];             //resource available
 
         int done=0;
         for(int i=0;i<finish.size();i++){
@@ -434,29 +434,43 @@ public class lab3 {
                 need[i][j]=needed.get(i).get(j);
                 given[i][j]=claim.get(i).get(j);
                 n[i][j]=need[i][j]-given[i][j];
-                r[0][j]=resources.get(j);
+                r[j]=resources.get(j);
             }
-            if(finish.get(i)>0){
+            if(finish.get(i)>0 || finish.get(i)==-1){
                 done+=1;
                 visit[i]=true;
             }
             else if(finish.get(i)==0) {visit[i]=false;visit[i]=false;}
         }
-        while(done<claim.size()){
-            System.out.println("start done");
+        while(done<finish.size()){
             boolean solve=false;
-            for(int i=0;i<claim.size();i++){
-                if(!visit[i] && check(i,resources,n)){
-                    for(int j=0;j<resources.size();j++){
-                        r[0][j]=r[0][j]-n[i][j]+need[i][j];
+            for (int i=0;i<finish.size();i++){
+                if(finish.get(i)==0){
+                    int j;
+                    for(j= 0;j<resources.size();j++) if(n[i][j]>r[j]) break;
+                    if(j==resources.size()){
+
                     }
 
-                    solve=visit[i]=true;
-                    done++;
+                }
             }
-        }if(!solve) break;}
-        if(done==finish.size()) return true;
-        else return false;
+        }
+
+
+//        while(done<claim.size()){
+//            System.out.println("start done");
+//            boolean solve=false;
+//            for(int i=0;i<claim.size();i++){
+//                if(!visit[i] && check(i,resources,n)){
+//                    for(int j=0;j<resources.size();j++){
+//                        r[0][j]=r[0][j]-n[i][j]+need[i][j];
+//                    }
+//                    solve=visit[i]=true;
+//                    done++;
+//            }
+//        }if(!solve) break;}
+//        if(done==finish.size()) return true;
+//        else return false;
     }
     public static void banker(List resources,List<List<List>> input){
         List<Integer> resReturn=new ArrayList<Integer>();
