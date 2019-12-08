@@ -2,6 +2,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
 
+
+
+
 class process{
     double A;
     double B;
@@ -16,6 +19,7 @@ class process{
 
 
 
+
     process(double A, double B, double C, int p, int ref){
         this.A=A;
         this.B=B;
@@ -24,6 +28,9 @@ class process{
         this.numRef=ref;
     }
 }
+//PLEASE NOTE PS REFERS TO PAGE SIZE
+//P REFERS TO LIST OF PROCESSES
+
 public class lab4{
     static int M;   //Machine size in words
     static int PS;  //Page size in words
@@ -35,7 +42,7 @@ public class lab4{
     static String randomFileName = "random-numbers.txt";
     static File randomFile = new File(randomFileName);
     static Scanner random;
-
+    static int frames;
     static {
         try {
             random = new Scanner(randomFile);
@@ -52,16 +59,21 @@ public class lab4{
         Stack s= new Stack();
         int unfinished=P.size();
         int remove;
-        int time=0;
+        int time=1;
         int ref;
         boolean hit=false;
-
+        int randomRemove=0;
+        System.out.println("framesize   "+frames);
         while(unfinished>0){ //while unfinished processes more than one
             for(int i=0;i<P.size();i++){
                 curr=P.get(i);
                 if(!curr.done){
                     for(int j=0;j<q;j++){
-                        ref=curr.refNum+curr.pNum;
+                        if(!curr.done){
+                        //System.out.println();
+                        System.out.print("time: "+time+"\t");
+                        ref=(curr.refNum/PS)*PS+curr.pNum-1;
+                        System.out.print("ref: "+curr.refNum+'\t');
                         if(curr.numRef>0){
                             for(int k=0;k<frameTable.size();k++){
                                 if(ref==frameTable.get(k)){
@@ -73,44 +85,65 @@ public class lab4{
                                 }
                             }
                             if(!hit){
+                                System.out.print("    Fault    ");
                                 curr.faults+=1;
                                 int tableSize=frameTable.size();
+
                                 if(R.equals("lifo")) {
+                                    if(frames==tableSize){
+
+
                                     remove=frameTable.remove(tableSize-1);
-                                    P.get((remove%10)-1).evicts+=1;
-                                    P.get((remove%10)-1).resTime+=(time-timeReside.get(remove));
+
+                                    System.out.print("   evicting "+remove%10 +" of "+tableSize);
+                                    P.get((remove%10)).evicts+=1;
+                                    P.get((remove%10)).resTime+=(time-timeReside.get(remove));}
                                     frameTable.add(ref);
 
                                 }
                                 else if (R.equals("random")){
-                                    int randomRemove=random.nextInt()%tableSize;
+                                    if(frames==tableSize){
+
+                                    randomRemove=random.nextInt()%tableSize;
                                     remove=frameTable.remove(randomRemove);
-                                    P.get((remove%PS)-1).evicts+=1;
-                                    P.get((remove%PS)-1).resTime+=(time-timeReside.get(remove));
+
+                                    System.out.print("   evicting "+remove +" of "+tableSize);
+                                    P.get((remove%PS)).evicts+=1;
+                                    P.get((remove%PS)).resTime+=(time-timeReside.get(remove));}
                                     frameTable.add(randomRemove,ref);
                                 } else if (R.equals("lru")){
+                                    if(frames==tableSize){
                                     remove=frameTable.remove(0);
-                                    P.get((remove%10)-1).evicts+=1;
-                                    P.get((remove%10)-1).resTime+=(time-timeReside.get(remove));
+                                    System.out.print("    evicting "+0 +" of "+P.get(remove%10).pNum);
+                                    P.get((remove%10)).evicts+=1;
+                                    P.get((remove%10)).resTime+=(time-timeReside.get(remove));}
                                     frameTable.add(ref);
                                 }
                                 timeReside.put(ref,time);
                             }
-                            double y=random.nextInt()/(Integer.MAX_VALUE+1d);
+                            int r=random.nextInt();
+                            System.out.print('\n');
+                            System.out.println(curr.pNum+"  uses "+r);
+                            double y=(double)r/(Integer.MAX_VALUE+1d);
                             if(y<curr.A){
                                 curr.refNum=(curr.refNum+1)%S;
-                            }else if(y<curr.A){
-                                curr.refNum=(curr.refNum-5)%S;
-                            }else if(y<curr.C){
+                            }else if(y<curr.A+curr.B){
+                                curr.refNum=(curr.refNum-5+S)%S;
+                            }else if(y<curr.A+curr.B+curr.C){
                                 curr.refNum=(curr.refNum+4)%S;
                             }else{
-                                curr.refNum=random.nextInt()%S;
+                                r=random.nextInt();
+                                System.out.println(curr.pNum+"  uses "+r);
+                                curr.refNum=r%S;
                             }
                             time+=1;
                             curr.numRef-=1;
                             hit=false;
-                            if(curr.numRef==0){curr.done=true;unfinished-=1;}
-                        }
+                            if(curr.numRef<=0){
+                                curr.done=true;
+                                unfinished-=1;
+                            }
+                        }  }
                         }
                     }
 
@@ -135,7 +168,7 @@ public class lab4{
     public static void main(String[] args) throws Exception {
         //System.out.println(args.length);0
         if(args.length!=6){
-            int lol=1;
+            int lol=16;              //
             String gogoname = "gogo.txt";
             File goFile = new File(gogoname);
             Scanner go=new Scanner(goFile);
@@ -146,7 +179,7 @@ public class lab4{
             J=go.nextInt();
             N=go.nextInt();
             R=go.next();
-
+            //                                       System.out.println(curr.pNum+"  uses "+r);
             //System.out.println(args.length);
             //System.err.println("Incorrect number of command arguments. 6 Required.");
             //System.exit(0);
@@ -181,7 +214,9 @@ public class lab4{
             P.add(new process(0.75,0.125,0.125,3,N));
             P.add(new process(0.5,0.125,0.125,4,N));
         }
+        frames=M/PS;
         for(int i=0;i<P.size();i++) P.get(i).refNum=(111*(i+1))%S;
+
         run(P);
     }
 
