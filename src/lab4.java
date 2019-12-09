@@ -3,23 +3,23 @@ import java.io.FileNotFoundException;
 import java.util.*;
 
 
+//Shang Ke lab 4
 
-
-class process{
+class process{ //for 1-4 processes
     double A;
     double B;
     double C;
-    int pNum;
+    int pNum;  //Process number
     int numRef; //Number of references
     int refNum; //curently referencing number
     boolean done=false;
-    int faults=0;
+    int faults=0; //number of faults
     int evicts=0; //times evicted
     int resTime =0; //times residing
 
 
 
-
+    //create each process to be ran
     process(double A, double B, double C, int p, int ref){
         this.A=A;
         this.B=B;
@@ -39,7 +39,7 @@ public class lab4{
     static int N;    //Number of references for each process
     static String R; //Replacement Algo
     static int q=3; //quantum size
-    static String randomFileName = "random-numbers.txt";
+    static String randomFileName = "random-numbers.txt"; //file to read random numbers from
     static File randomFile = new File(randomFileName);
     static Scanner random;
     static int frames;
@@ -63,83 +63,83 @@ public class lab4{
         int ref;
         boolean hit=false;
         int randomRemove=0;
-        System.out.println("framesize   "+frames);
+        //System.out.println("framesize   "+frames);
         while(unfinished>0){ //while unfinished processes more than one
             for(int i=0;i<P.size();i++){
                 curr=P.get(i);
                 if(!curr.done){
-                    for(int j=0;j<q;j++){
+                    for(int j=0;j<q;j++){ //Round Robin scheduling 3
                         if(!curr.done){
                         //System.out.println();
-                        System.out.print("time: "+time+"\t");
+                        //System.out.print("time: "+time+"\t");
                         ref=(curr.refNum/PS)*PS+curr.pNum-1;
-                        System.out.print("ref: "+curr.refNum+'\t');
-                        if(curr.numRef>0){
+                        //System.out.print("ref: "+curr.refNum+'\t');
+                        if(curr.numRef>0){ //run if number of reference for current process >=1
                             for(int k=0;k<frameTable.size();k++){
                                 if(ref==frameTable.get(k)){
                                     hit=true;
-                                    if(R.equals("lru")){
+                                    if(R.equals("lru")){//keep shifting, hit is not LRU
                                         frameTable.remove(k);
                                         frameTable.add(ref);
                                     }
                                 }
                             }
-                            if(!hit){
-                                System.out.print("    Fault    ");
+                            if(!hit){//if not hit
+                                //System.out.print("    Fault    ");
                                 curr.faults+=1;
                                 int tableSize=frameTable.size();
 
-                                if(R.equals("lifo")) {
+                                if(R.equals("lifo")) { //remove last frame, evict and record residency time. Add curr to frametable
                                     if(frames==tableSize){
 
 
                                     remove=frameTable.remove(tableSize-1);
 
-                                    System.out.print("   evicting "+remove%10 +" of "+tableSize);
+                                    //System.out.print("   evicting "+remove%10 +" of "+tableSize);
                                     P.get((remove%10)).evicts+=1;
                                     P.get((remove%10)).resTime+=(time-timeReside.get(remove));}
                                     frameTable.add(ref);
 
                                 }
-                                else if (R.equals("random")){
+                                else if (R.equals("random")){ //remove random frame, evict and record residency time. Add curr to frametable
                                     if(frames==tableSize){
 
                                     randomRemove=random.nextInt()%tableSize;
                                     remove=frameTable.remove(randomRemove);
 
-                                    System.out.print("   evicting "+remove +" of "+tableSize);
+                                    //System.out.print("   evicting "+remove +" of "+tableSize);
                                     P.get((remove%PS)).evicts+=1;
                                     P.get((remove%PS)).resTime+=(time-timeReside.get(remove));}
                                     frameTable.add(randomRemove,ref);
-                                } else if (R.equals("lru")){
+                                } else if (R.equals("lru")){ //remove least frequently used, evict and record residency time. Add curr to frametable
                                     if(frames==tableSize){
                                     remove=frameTable.remove(0);
-                                    System.out.print("    evicting "+0 +" of "+P.get(remove%10).pNum);
+                                    //System.out.print("    evicting "+0 +" of "+P.get(remove%10).pNum);
                                     P.get((remove%10)).evicts+=1;
                                     P.get((remove%10)).resTime+=(time-timeReside.get(remove));}
                                     frameTable.add(ref);
                                 }
                                 timeReside.put(ref,time);
                             }
-                            int r=random.nextInt();
-                            System.out.print('\n');
-                            System.out.println(curr.pNum+"  uses "+r);
-                            double y=(double)r/(Integer.MAX_VALUE+1d);
+                            int r=random.nextInt(); //read random number
+                            //System.out.print('\n');
+                            //System.out.println(curr.pNum+"  uses "+r);
+                            double y=(double)r/(Integer.MAX_VALUE+1d); //get probability
                             if(y<curr.A){
-                                curr.refNum=(curr.refNum+1)%S;
+                                curr.refNum=(curr.refNum+1)%S; //case 1
                             }else if(y<curr.A+curr.B){
-                                curr.refNum=(curr.refNum-5+S)%S;
+                                curr.refNum=(curr.refNum-5+S)%S; //case 2
                             }else if(y<curr.A+curr.B+curr.C){
-                                curr.refNum=(curr.refNum+4)%S;
+                                curr.refNum=(curr.refNum+4)%S; //case 3
                             }else{
-                                r=random.nextInt();
-                                System.out.println(curr.pNum+"  uses "+r);
+                                r=random.nextInt();  //read twice due to random reference
+                                //System.out.println(curr.pNum+"  uses "+r);
                                 curr.refNum=r%S;
                             }
                             time+=1;
                             curr.numRef-=1;
                             hit=false;
-                            if(curr.numRef<=0){
+                            if(curr.numRef<=0){ //check if done, stop process from running again
                                 curr.done=true;
                                 unfinished-=1;
                             }
@@ -153,7 +153,7 @@ public class lab4{
         int faults=0;
         int evicts=0;
         int timeResidency=0;
-        for(int i=0;i<P.size();i++){
+        for(int i=0;i<P.size();i++){ //calculate total faults, evictions, time residency, and average residency. If zero eviction, avg residency cannot be determined.
             curr=P.get(i);
             faults+=curr.faults;
             evicts+=curr.evicts;
